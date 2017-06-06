@@ -29,6 +29,11 @@ function Person(location){
     this.y = this.y + dy;
     this.shape.move(this.x, this.y, 0, true)
   }
+  this.moveTo = function(x, y){
+    this.x = this.x;
+    this.y = this.y;
+    this.shape.move(this.x, this.y, 0, false);
+  }
 
   this.width = 50;
   this.height = 50;
@@ -59,6 +64,38 @@ function Beacon(location){
 //   }
 // }
 
+var r = new Rune({
+  container: "body",
+  width: 600,
+  height: 600,
+  frameRate : 60,
+  debug: true
+});
+
+var myGroup = r.group(0, 0)
+
+
+my_location = {
+  id: '0',
+  type: "person",
+  x: 300,
+  y: 300
+}
+
+me = new Person(my_location)
+me_color = new Rune.Color('hsv', 0, 50, 50, 0.3)
+me.update_color(me_color)
+console.log(me)
+
+me2 = new Person(my_location)
+me2.update_size(100, 100)
+
+
+// r.on('update', function() {
+//   me.move(Rune.random(-5,5), Rune.random(-5,5))
+//   me2.move(Rune.random(-5,5), Rune.random(-5,5))
+// });
+
 var sampleInput = {
   "locations": [
     {
@@ -76,52 +113,40 @@ var sampleInput = {
   ]
 };
 
+var sampleInput2 = {
+  "locations": [
+    {
+      "id": "1",
+      "type": "person",
+      "x": 10,
+      "y": 10
+    },
+    {
+      "id": "3",
+      "type": "person",
+      "x": 20,
+      "y": 30
+    },
+  ]
+};
+
 var people = [];
-for (let location in sampleInput.locations) {
-  people.push(new Person(sampleInput.locations[location]));
+for (let location of sampleInput.locations) {  // initial list of people
+  thisPerson = new Person(location)
+  people.push(thisPerson);
+  console.log('created person', thisPerson.id, '@', thisPerson.x, thisPerson.y);
 }
 
 function updateLocations(locations) {
-  for (var location in locations) {
-    if (foundPerson = people.find(function(person) {return person.is == location.id})) {
-      foundPerson.move(location.x, location.y);
-      console.log('moved person ', foundPerson.id);
+  for (let location of locations) {
+    foundPerson = people.find(function(person) {return person.id == location.id});
+    if (foundPerson !== undefined) {
+      foundPerson.moveTo(location.x, location.y);
+      console.log('moved person', foundPerson.id, 'to', location.x, location.y);
     } else {
-      console.log('No matching person found for id ', location.id);
+      console.log('No matching person found for id', location.id);
     }
   }
 }
-
-var r = new Rune({
-  container: "body",
-  width: 600,
-  height: 600,
-  frameRate : 60,
-  debug: true
-});
-
-var myGroup = r.group(0, 0)
-
-
-my_location = {
-  id: 1,
-  type: "person",
-  x: 300,
-  y: 300
-}
-
-me = new Person(my_location)
-me_color = new Rune.Color('hsv', 0, 50, 50, 0.3)
-me.update_color(me_color)
-console.log(me)
-
-me2 = new Person(my_location)
-me2.update_size(100, 100)
-
-
-r.on('update', function() {
-  me.move(Rune.random(-5,5), Rune.random(-5,5))
-  me2.move(Rune.random(-5,5), Rune.random(-5,5))
-});
 
 r.play()
