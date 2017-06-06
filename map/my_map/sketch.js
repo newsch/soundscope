@@ -1,29 +1,33 @@
-function Person(person_id, location, sound){
-  this.is = person_id;
-
-  this.set_location = function (x, y){
-    this.x = x;
-    this.y = y;
-  };
-
+function Thing(location){
+  this.id = location.id;
+  this.shape = null;
+  this.x = location.x;
+  this.y = location.y;
   this.get_location = function (){
-    var location = []
-    location.push(this.x);
-    location.push(this.y);
-    return location
+    var tmp = []
+    tmp.push(this.x);
+    tmp.push(this.y);
+    return tmp
   }
+  return this;
+}
+
+function Person(location){
+  Thing.call(this, location)
+
+  this.shape = r.ellipse(this.x, this.y, 30, 30);
   this.move = function(dx, dy){
-    this.x += dx;
-    this.y += dy;
+    this.x = this.x + dx;
+    this.y = this.y + dy;
+    this.shape.move(this.x, this.y, 0, true)
   }
-  this.sound = sound; // sound object
+  return this;
 }
 
-function Beacon(){
-
-}
-function Sound(){
-
+function Beacon(location){
+  Thing.call(this, location)
+  this.shape = r.triangle(0, 0, 100, 50);
+  return this;
 }
 
 
@@ -31,16 +35,21 @@ var r = new Rune({
   container: "body",
   width: 600,
   height: 600,
-  frameRate : 20,
+  frameRate : 60,
   debug: true
 });
 
-var people = []
+my_location = {
+  id: 1,
+  type: "person",
+  x: 300,
+  y: 300
+}
 
-var rectangle = r.rect(0, 0, 100, 50);
-
+me = new Person(my_location)
+console.log(me)
 r.on('update', function() {
-  rectangle.move(Rune.random(-10, 10), 0, true)
+  me.move(Rune.random(-10,10), Rune.random(-10,10))
 });
 
 r.play()
