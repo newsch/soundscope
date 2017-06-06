@@ -30,6 +30,45 @@ function Beacon(location){
   return this;
 }
 
+// function getSampleLocations(rawJsonData) {
+//   jsonData = JSON.parse();
+//   for (let location in rawJsonData) {
+//     console.log(location);
+//   }
+// }
+
+var sampleInput = {
+  "locations": [
+    {
+      "id": "1",
+      "type": "person",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "2",
+      "type": "person",
+      "x": 10,
+      "y": 20
+    }
+  ]
+};
+
+var people = [];
+for (let location in sampleInput.locations) {
+  people.push(new Person(sampleInput.locations[location]));
+}
+
+function updateLocations(locations) {
+  for (var location in locations) {
+    if (foundPerson = people.find(function(person) {return person.is == location.id})) {
+      foundPerson.move(location.x, location.y);
+      console.log('moved person ', foundPerson.id);
+    } else {
+      console.log('No matching person found for id ', location.id);
+    }
+  }
+}
 
 var r = new Rune({
   container: "body",
