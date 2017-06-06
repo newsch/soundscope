@@ -65,13 +65,14 @@ function Thing(location){
     tmp.push(this.y);
     return tmp
   }
-  this.set_location = function (x,y){
-    this.x = x;
-    this.y = y;
-  }
   this.update_color = function(color){
     this.color = color;
     this.shape.fill(this.color)
+  }
+  this.move = function(dx, dy){
+    this.x = this.x + dx;
+    this.y = this.y + dy;
+    this.shape.move(dx, dy, true)
   }
   this.moveTo = function(x, y){
     this.x = x;
@@ -83,24 +84,46 @@ function Thing(location){
 
 function Person(location, stage){
   Thing.call(this, location)
-
+  this.stage = stage;
   this.width = 50;
   this.height = 50;
   this.shape = new Rune.Ellipse(this.x, this.y,
     this.width, this.height)
-    .fill(this.color).addTo(stage);
+    .fill(this.color).addTo(this.stage);
 
-  this.move = function(dx, dy){
-    this.x = this.x + dx;
-    this.y = this.y + dy;
-    this.shape.move(dx, dy, true)
-  }
+
   this.update_size = function(width, height){
     this.width = width;
     this.height = height;
     this.shape.state.width = width;
     this.shape.state.height= height;
   }
+
+  this.get_dist_to_things = function(things){
+    var distances = [];
+    for (var i = 0; i < things.length; i++) {
+      var distance = [];
+      var thing_id = things[i].id;
+      distance.push(thing_id);
+
+      var thing_x = things[i].x;
+      var thing_y = things[i].y;
+      var dist = Math.sqrt((this.x - thing_x)^2 + (this.y - thing_y)^2);
+      distance.push(dist);
+
+      distances.push(distance);
+    }
+    return distances;
+  }
+  // this.draw_lines_to_people = function(ppl_array){
+  //   var distances = this.get_dist_to_things(ppl_array);
+  //   this.lines = []
+  //   for (var i = 0; i < ppl_array.length; i++) {
+  //     line = new Rune.Line(this.x, this.y, ppl_array[i].x, ppl_array[i].y)
+  //     line.addTo(this.stage)
+  //     this.lines.push()
+  //   }
+  // }
   return this;
 
 }
@@ -127,6 +150,7 @@ function Beacon(location, stage){
   );
   }
   this.shape.fill(this.color).addTo(stage);
+  this.stage = stage;
   return this;
 }
 
@@ -136,7 +160,6 @@ function Beacon(location, stage){
 //     console.log(location);
 //   }
 // }
-
 var sampleInput2 = {
   "locations": [
     {
@@ -184,12 +207,5 @@ function updateLocations(locations) {
     }
   }
 }
-
-// console.log(my_group)
-// r.on('update', function() {
-//   me.move(Rune.random(-5,5), Rune.random(-5,5))
-//   me3.update_color(new Rune.Color('hsv', 10,
-//   Rune.random(10, 100), Rune.random(10, 100)))
-// });
 
 r.play()
