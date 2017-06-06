@@ -1,8 +1,6 @@
 function Thing(location){
   this.id = location.id;
-  this.shape = null;
   this.music = null;
-  this.color = null;
   this.x = location.x;
   this.y = location.y;
   this.get_location = function (){
@@ -18,6 +16,11 @@ function Thing(location){
   this.update_color = function(color){
     this.color = color;
     this.shape.fill(this.color)
+  }
+  this.moveTo = function(x, y){
+    this.x = x;
+    this.y = y;
+    this.shape.move(this.x, this.y)
   }
   return this;
 }
@@ -36,12 +39,6 @@ function Person(location, stage){
     this.y = this.y + dy;
     this.shape.move(dx, dy, true)
   }
-  this.moveTo = function(x, y){
-    this.x = x;
-    this.y = y;
-    this.shape.move(this.x, this.y)
-  }
-
   this.update_size = function(width, height){
     this.width = width;
     this.height = height;
@@ -54,7 +51,8 @@ function Person(location, stage){
 
 function Beacon(location, stage){
   Thing.call(this, location)
-  this.shape = new Rune.triangle(0, 0, 100, 50, r)
+  this.color = new Rune.Color('hsv', 10, 100, 70)
+  this.shape = new Rune.Triangle(0, 0, 100, 0, 50, 50)
     .fill(this.color).addTo(stage);
   return this;
 }
@@ -78,15 +76,20 @@ my_location = {
 me = new Person(my_location, my_group)
 me_color = new Rune.Color('hsv', 0, 50, 50, 0.3)
 me.update_color(me_color)
-console.log(me)
+
 
 me2 = new Person(my_location, my_group)
 me2.update_size(100, 100)
 me2.moveTo(400, 400)
 
+me3 = new Beacon(my_location, my_group)
+me3.moveTo(250, 0)
 
+console.log(my_group)
 r.on('update', function() {
   me.move(Rune.random(-5,5), Rune.random(-5,5))
+  me3.update_color(new Rune.Color('hsv', 10,
+  Rune.random(10, 100), Rune.random(10, 100)))
 });
 
 r.play()
