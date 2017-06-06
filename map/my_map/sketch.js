@@ -9,13 +9,14 @@ function Thing(location){
     tmp.push(this.y);
     return tmp
   }
-  this.set_location = function (x,y){
-    this.x = x;
-    this.y = y;
-  }
   this.update_color = function(color){
     this.color = color;
     this.shape.fill(this.color)
+  }
+  this.move = function(dx, dy){
+    this.x = this.x + dx;
+    this.y = this.y + dy;
+    this.shape.move(dx, dy, true)
   }
   this.moveTo = function(x, y){
     this.x = x;
@@ -27,33 +28,56 @@ function Thing(location){
 
 function Person(location, stage){
   Thing.call(this, location)
-
+  this.stage = stage;
   this.width = 50;
   this.height = 50;
   this.shape = new Rune.Ellipse(this.x, this.y,
     this.width, this.height)
-    .fill(this.color).addTo(stage);
+    .fill(this.color).addTo(this.stage);
 
-  this.move = function(dx, dy){
-    this.x = this.x + dx;
-    this.y = this.y + dy;
-    this.shape.move(dx, dy, true)
-  }
+
   this.update_size = function(width, height){
     this.width = width;
     this.height = height;
     this.shape.state.width = width;
     this.shape.state.height= height;
   }
+
+  this.get_dist_to_things = function(things_array){
+    var distances = [];
+    for (var i = 0; i < things.length; i++) {
+      var distance = [];
+      var thing_id = things[i].id;
+      distance.push(beacon_id);
+
+      var thing_x = things[i].x;
+      var thing_y = things[i].y;
+      var dist = sqrt((this.x - thing_x)^2 + (this.y - thing_y)^2);
+      distance.push(dist);
+
+      distances.push(distance);
+    }
+    return distances;
+  }
+  // this.draw_lines_to_people = function(ppl_array){
+  //   var distances = this.get_dist_to_things(ppl_array);
+  //   this.lines = []
+  //   for (var i = 0; i < ppl_array.length; i++) {
+  //     line = new Rune.Line(this.x, this.y, ppl_array[i].x, ppl_array[i].y)
+  //     line.addTo(this.stage)
+  //     this.lines.push()
+  //   }
+  // }
   return this;
 
 }
 
 function Beacon(location, stage){
   Thing.call(this, location)
+  this.stage = stage;
   this.color = new Rune.Color('hsv', 10, 100, 70)
   this.shape = new Rune.Triangle(0, 0, 100, 0, 50, 50)
-    .fill(this.color).addTo(stage);
+    .fill(this.color).addTo(this.stage);
   return this;
 }
 
@@ -71,6 +95,7 @@ var r = new Rune({
   frameRate : 60,
   debug: true
 });
+
 var my_group = r.group(0, 0)
 
 my_location = {
@@ -88,9 +113,6 @@ me.update_color(me_color)
 me2 = new Person(my_location, my_group)
 me2.update_size(100, 100)
 me2.moveTo(400, 400)
-
-me3 = new Beacon(my_location, my_group)
-me3.moveTo(250, 0)
 
 r.on('update', function() {
   me.move(Rune.random(-5,5), Rune.random(-5,5))
@@ -151,6 +173,7 @@ function updateLocations(locations) {
 }
 
 console.log(my_group)
+
 r.on('update', function() {
   me.move(Rune.random(-5,5), Rune.random(-5,5))
   me3.update_color(new Rune.Color('hsv', 10,
