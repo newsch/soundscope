@@ -7,23 +7,47 @@ var r = new Rune({
 });
 
 var my_group = r.group(0, 0);
+// var noise = new Rune.Noise().noiseDetail(0.2); // https://github.com/runemadsen/rune.noise.js
 
 var people = [];
 var beacons = [];
-var sampleInitialInput = {
+var sampleInput1 = {
   "locations": [
     {
       "id": "3",
       "type": "person",
-      "x": 0,
-      "y": 0
+      "x": 400,
+      "y": 300,
     },
     {
       "id": "4",
       "type": "person",
-      "x": 100,
-      "y": 100
+      "x": 200,
+      "y": 300
+    },
+    {
+      "id": "5",
+      "type": "person",
+      "x": 300,
+      "y": 300,
     }
+  ]
+};
+
+var sampleInput2 = {
+  "locations": [
+    {
+      "id": "1",
+      "type": "person",
+      "x": 20,
+      "y": 20
+    },
+    {
+      "id": "3",
+      "type": "person",
+      "x": 20,
+      "y": 30
+    },
   ]
 };
 
@@ -90,6 +114,7 @@ function Person(location, stage){
   this.shape = new Rune.Ellipse(this.x, this.y,
     this.width, this.height)
     .fill(this.color).addTo(this.stage);
+  this.lines = [];
 
 
   this.update_size = function(width, height){
@@ -108,22 +133,26 @@ function Person(location, stage){
 
       var thing_x = things[i].x;
       var thing_y = things[i].y;
-      var dist = Math.sqrt((this.x - thing_x)^2 + (this.y - thing_y)^2);
+      var dist = Math.sqrt((this.x - thing_x)**2 + (this.y - thing_y)**2);
       distance.push(dist);
 
       distances.push(distance);
     }
     return distances;
   }
-  // this.draw_lines_to_people = function(ppl_array){
-  //   var distances = this.get_dist_to_things(ppl_array);
-  //   this.lines = []
-  //   for (var i = 0; i < ppl_array.length; i++) {
-  //     line = new Rune.Line(this.x, this.y, ppl_array[i].x, ppl_array[i].y)
-  //     line.addTo(this.stage)
-  //     this.lines.push()
-  //   }
-  // }
+
+  this.draw_lines_to_people = function(ppl_array){
+    // var distances = this.get_dist_to_things(ppl_array);
+    if (this.lines != []) {  // delete lines
+      for (line of this.lines) line.removeParent();
+    }
+    this.lines = [];
+    for (person of ppl_array) {
+      newLine = new Rune.Line(this.x, this.y, person.x, person.y)
+      newLine.addTo(this.stage);
+      this.lines.push(newLine);
+    }
+  }
   return this;
 
 }
@@ -154,44 +183,22 @@ function Beacon(location, stage){
   return this;
 }
 
-// function getSampleLocations(rawJsonData) {
-//   jsonData = JSON.parse();
-//   for (let location in rawJsonData) {
-//     console.log(location);
-//   }
-// }
-var sampleInput2 = {
-  "locations": [
-    {
-      "id": "1",
-      "type": "person",
-      "x": 20,
-      "y": 20
-    },
-    {
-      "id": "3",
-      "type": "person",
-      "x": 20,
-      "y": 30
-    },
-  ]
-};
-
-for (let location of sampleInitialInput.locations) {  // initial list of people
-  thisPerson = new Person(location, my_group)
-  people.push(thisPerson);
-  console.log('created person', thisPerson.id, '@', thisPerson.x, thisPerson.y);
-}
-
 for (let beaconOptions of initialBeacons) {
   newBeacon = new Beacon(beaconOptions, my_group);
   beacons.push(newBeacon);
   console.log('created beacon', newBeacon.id, '@', newBeacon.x, newBeacon.y);
 }
 
+for (let location of sampleInput1.locations) {  // initial list of people
+  thisPerson = new Person(location, my_group)
+  people.push(thisPerson);
+  console.log('created person', thisPerson.id, '@', thisPerson.x, thisPerson.y);
+}
+
 r.on('update', function() {
   for (person of people) {  // move people randomly
     person.move(Rune.random(-5,5), Rune.random(-5,5))
+    person.draw_lines_to_people(people);
   }
 
 });
