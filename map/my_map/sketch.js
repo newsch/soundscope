@@ -34,11 +34,12 @@ function Person(location, stage){
   this.move = function(dx, dy){
     this.x = this.x + dx;
     this.y = this.y + dy;
-    this.shape.move(this.x, this.y, 0, true)
+    this.shape.move(dx, dy, true)
   }
   this.moveTo = function(x, y){
     this.x = x;
     this.y = y;
+    this.shape.move(this.x, this.y)
   }
 
   this.update_size = function(width, height){
@@ -81,12 +82,11 @@ console.log(me)
 
 me2 = new Person(my_location, my_group)
 me2.update_size(100, 100)
-
+me2.moveTo(400, 400)
 
 
 r.on('update', function() {
   me.move(Rune.random(-5,5), Rune.random(-5,5))
-  me2.move(Rune.random(-5,5), Rune.random(-5,5))
 });
 
 r.play()
