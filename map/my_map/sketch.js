@@ -102,10 +102,11 @@ function Person(location, stage){
     //console.log(dist)
     var rgb = []
     for (var i = 0; i < dist.length; i++) {
-       rgb.push(dist[i][1] / 20);
+      max_dist = Math.sqrt(r.width**2 + r.height**2);
+      console.log(dist[i][0])
+      rgb.push(Rune.map(dist[i][1], max_dist, 0, 255, 0));
     }
-    var new_color = new Rune.Color(rgb[0], rgb[1], rgb[2])
-    console.log(new_color)
+    var new_color = new Rune.Color(rgb[2], rgb[0], rgb[1])
     this.color = new_color;
     this.shape.fill(new_color);
   }
