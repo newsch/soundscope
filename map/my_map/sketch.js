@@ -91,14 +91,30 @@ function Person(location, stage){
     this.width, this.height)
     .fill(this.color).addTo(this.stage);
 
-
+  this.move = function(dx, dy){
+    this.x = this.x + dx;
+    this.y = this.y + dy;
+    this.shape.move(dx, dy, true)
+  }
+  this.update_my_color = function(beacons){
+    //console.log(beacons)
+    var dist = this.get_dist_to_things(beacons);
+    //console.log(dist)
+    var rgb = []
+    for (var i = 0; i < dist.length; i++) {
+       rgb.push(dist[i][1] / 20);
+    }
+    var new_color = new Rune.Color(rgb[0], rgb[1], rgb[2])
+    console.log(new_color)
+    this.color = new_color;
+    this.shape.fill(new_color);
+  }
   this.update_size = function(width, height){
     this.width = width;
     this.height = height;
     this.shape.state.width = width;
     this.shape.state.height= height;
   }
-
   this.get_dist_to_things = function(things){
     var distances = [];
     for (var i = 0; i < things.length; i++) {
@@ -108,22 +124,13 @@ function Person(location, stage){
 
       var thing_x = things[i].x;
       var thing_y = things[i].y;
-      var dist = Math.sqrt((this.x - thing_x)^2 + (this.y - thing_y)^2);
+      var dist = Math.sqrt((this.x - thing_x)**2 + (this.y - thing_y)**2);
       distance.push(dist);
 
       distances.push(distance);
     }
     return distances;
   }
-  // this.draw_lines_to_people = function(ppl_array){
-  //   var distances = this.get_dist_to_things(ppl_array);
-  //   this.lines = []
-  //   for (var i = 0; i < ppl_array.length; i++) {
-  //     line = new Rune.Line(this.x, this.y, ppl_array[i].x, ppl_array[i].y)
-  //     line.addTo(this.stage)
-  //     this.lines.push()
-  //   }
-  // }
   return this;
 
 }
@@ -189,9 +196,12 @@ for (let beaconOptions of initialBeacons) {
   console.log('created beacon', newBeacon.id, '@', newBeacon.x, newBeacon.y);
 }
 
+
+
 r.on('update', function() {
   for (person of people) {  // move people randomly
-    person.move(Rune.random(-5,5), Rune.random(-5,5))
+    person.move(Rune.random(-20,20), Rune.random(-20,20))
+    person.update_my_color(beacons)
   }
 
 });
