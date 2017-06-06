@@ -1,3 +1,59 @@
+var r = new Rune({
+  container: "body",
+  width: 600,
+  height: 600,
+  frameRate : 60,
+  debug: true
+});
+
+var my_group = r.group(0, 0);
+
+var people = [];
+var beacons = [];
+var sampleInitialInput = {
+  "locations": [
+    {
+      "id": "3",
+      "type": "person",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "4",
+      "type": "person",
+      "x": 100,
+      "y": 100
+    }
+  ]
+};
+
+var initialBeacons = [
+  {
+    "id": "0",
+    "type": "beacon",
+    "x": r.width / 2,
+    "y": 0,
+    "color": new Rune.Color(255, 0, 0),
+    "points": [-50, 0, 50, 0, 0, 100],
+  },
+  {
+    "id": "1",
+    "type": "beacon",
+    "x": r.width,
+    "y": r.height,
+    "color": new Rune.Color(0, 255, 0),
+    "points": [0, 0, 0, -100, -100, 0],
+  },
+  {
+    "id": "2",
+    "type": "beacon",
+    "x": 0,
+    "y": r.height,
+    "color": new Rune.Color(0, 0, 255),
+    "points": [0, 0, 0, -100, 100, 0],
+  }
+]
+
 function Thing(location){
   this.id = location.id;
   this.music = null;
@@ -51,9 +107,26 @@ function Person(location, stage){
 
 function Beacon(location, stage){
   Thing.call(this, location)
-  this.color = new Rune.Color('hsv', 10, 100, 70)
-  this.shape = new Rune.Triangle(0, 0, 100, 0, 50, 50)
-    .fill(this.color).addTo(stage);
+  if (location.hasOwnProperty('color')) this.color = location.color;
+  else this.color = new Rune.Color('hsv', 10, 100, 70);
+
+  if (location.hasOwnProperty('points')) {
+    this.shape = new Rune.Triangle(  // TODO: use apply() for this
+      this.x + location.points[0],
+      this.y + location.points[1],
+      this.x + location.points[2],
+      this.y + location.points[3],
+      this.x + location.points[4],
+      this.y + location.points[5],
+    );
+  } else {
+    this.shape = new Rune.Triangle(
+    this.x, this.y,
+    this.x + 100, this.y + 0,
+    this.x + 50, this.y - 50,
+  );
+  }
+  this.shape.fill(this.color).addTo(stage);
   return this;
 }
 
@@ -63,56 +136,6 @@ function Beacon(location, stage){
 //     console.log(location);
 //   }
 // }
-
-var r = new Rune({
-  container: "body",
-  width: 600,
-  height: 600,
-  frameRate : 60,
-  debug: true
-});
-var my_group = r.group(0, 0)
-
-my_location = {
-  id: '0',
-  type: "person",
-  x: 300,
-  y: 300
-}
-
-me = new Person(my_location, my_group)
-me_color = new Rune.Color('hsv', 0, 50, 50, 0.3)
-me.update_color(me_color)
-
-
-me2 = new Person(my_location, my_group)
-me2.update_size(100, 100)
-me2.moveTo(400, 400)
-
-me3 = new Beacon(my_location, my_group)
-me3.moveTo(250, 0)
-
-r.on('update', function() {
-  me.move(Rune.random(-5,5), Rune.random(-5,5))
-  me2.move(Rune.random(-5,5), Rune.random(-5,5))
-});
-
-var sampleInitialInput = {
-  "locations": [
-    {
-      "id": "1",
-      "type": "person",
-      "x": 0,
-      "y": 0
-    },
-    {
-      "id": "2",
-      "type": "person",
-      "x": 100,
-      "y": 100
-    }
-  ]
-};
 
 var sampleInput2 = {
   "locations": [
@@ -131,12 +154,24 @@ var sampleInput2 = {
   ]
 };
 
-var people = [];
 for (let location of sampleInitialInput.locations) {  // initial list of people
   thisPerson = new Person(location, my_group)
   people.push(thisPerson);
   console.log('created person', thisPerson.id, '@', thisPerson.x, thisPerson.y);
 }
+
+for (let beaconOptions of initialBeacons) {
+  newBeacon = new Beacon(beaconOptions, my_group);
+  beacons.push(newBeacon);
+  console.log('created beacon', newBeacon.id, '@', newBeacon.x, newBeacon.y);
+}
+
+r.on('update', function() {
+  for (person of people) {  // move people randomly
+    person.move(Rune.random(-5,5), Rune.random(-5,5))
+  }
+
+});
 
 function updateLocations(locations) {
   for (let location of locations) {
@@ -150,11 +185,11 @@ function updateLocations(locations) {
   }
 }
 
-console.log(my_group)
-r.on('update', function() {
-  me.move(Rune.random(-5,5), Rune.random(-5,5))
-  me3.update_color(new Rune.Color('hsv', 10,
-  Rune.random(10, 100), Rune.random(10, 100)))
-});
+// console.log(my_group)
+// r.on('update', function() {
+//   me.move(Rune.random(-5,5), Rune.random(-5,5))
+//   me3.update_color(new Rune.Color('hsv', 10,
+//   Rune.random(10, 100), Rune.random(10, 100)))
+// });
 
 r.play()
