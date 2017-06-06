@@ -1,8 +1,6 @@
 function Thing(location){
   this.id = location.id;
-  this.shape = null;
   this.music = null;
-  this.color = null;
   this.x = location.x;
   this.y = location.y;
   this.get_location = function (){
@@ -19,28 +17,28 @@ function Thing(location){
     this.color = color;
     this.shape.fill(this.color)
   }
+  this.moveTo = function(x, y){
+    this.x = x;
+    this.y = y;
+    this.shape.move(this.x, this.y)
+  }
   return this;
 }
 
-function Person(location){
+function Person(location, stage){
   Thing.call(this, location)
-  this.move = function(dx, dy){
-    this.x = this.x + dx;
-    this.y = this.y + dy;
-    this.shape.move(this.x, this.y, 0, true)
-  }
-  this.moveTo = function(x, y){
-    this.x = this.x;
-    this.y = this.y;
-    this.shape.move(this.x, this.y, 0, false);
-  }
 
   this.width = 50;
   this.height = 50;
   this.shape = new Rune.Ellipse(this.x, this.y,
     this.width, this.height)
-    .fill(this.color).addTo(myGroup);
+    .fill(this.color).addTo(stage);
 
+  this.move = function(dx, dy){
+    this.x = this.x + dx;
+    this.y = this.y + dy;
+    this.shape.move(dx, dy, true)
+  }
   this.update_size = function(width, height){
     this.width = width;
     this.height = height;
@@ -51,9 +49,11 @@ function Person(location){
 
 }
 
-function Beacon(location){
+function Beacon(location, stage){
   Thing.call(this, location)
-  this.shape = new Rune.triangle(0, 0, 100, 50, r);
+  this.color = new Rune.Color('hsv', 10, 100, 70)
+  this.shape = new Rune.Triangle(0, 0, 100, 0, 50, 50)
+    .fill(this.color).addTo(stage);
   return this;
 }
 
@@ -71,9 +71,7 @@ var r = new Rune({
   frameRate : 60,
   debug: true
 });
-
-var myGroup = r.group(0, 0)
-
+var my_group = r.group(0, 0)
 
 my_location = {
   id: '0',
@@ -82,21 +80,24 @@ my_location = {
   y: 300
 }
 
-me = new Person(my_location)
+me = new Person(my_location, my_group)
 me_color = new Rune.Color('hsv', 0, 50, 50, 0.3)
 me.update_color(me_color)
-console.log(me)
 
-me2 = new Person(my_location)
+
+me2 = new Person(my_location, my_group)
 me2.update_size(100, 100)
+me2.moveTo(400, 400)
 
+me3 = new Beacon(my_location, my_group)
+me3.moveTo(250, 0)
 
-// r.on('update', function() {
-//   me.move(Rune.random(-5,5), Rune.random(-5,5))
-//   me2.move(Rune.random(-5,5), Rune.random(-5,5))
-// });
+r.on('update', function() {
+  me.move(Rune.random(-5,5), Rune.random(-5,5))
+  me2.move(Rune.random(-5,5), Rune.random(-5,5))
+});
 
-var sampleInput = {
+var sampleInitialInput = {
   "locations": [
     {
       "id": "1",
@@ -107,8 +108,8 @@ var sampleInput = {
     {
       "id": "2",
       "type": "person",
-      "x": 10,
-      "y": 20
+      "x": 100,
+      "y": 100
     }
   ]
 };
@@ -118,8 +119,8 @@ var sampleInput2 = {
     {
       "id": "1",
       "type": "person",
-      "x": 10,
-      "y": 10
+      "x": 20,
+      "y": 20
     },
     {
       "id": "3",
@@ -131,8 +132,8 @@ var sampleInput2 = {
 };
 
 var people = [];
-for (let location of sampleInput.locations) {  // initial list of people
-  thisPerson = new Person(location)
+for (let location of sampleInitialInput.locations) {  // initial list of people
+  thisPerson = new Person(location, my_group)
   people.push(thisPerson);
   console.log('created person', thisPerson.id, '@', thisPerson.x, thisPerson.y);
 }
@@ -148,5 +149,12 @@ function updateLocations(locations) {
     }
   }
 }
+
+console.log(my_group)
+r.on('update', function() {
+  me.move(Rune.random(-5,5), Rune.random(-5,5))
+  me3.update_color(new Rune.Color('hsv', 10,
+  Rune.random(10, 100), Rune.random(10, 100)))
+});
 
 r.play()
