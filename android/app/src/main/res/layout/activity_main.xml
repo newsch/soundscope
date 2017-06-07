@@ -6,14 +6,52 @@
     android:layout_height="match_parent"
     tools:context="edu.olin.library.soundscope.MainActivity">
 
-    <TextView
-        android:id="@+id/mText"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="368dp"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Volume 1" />
+
+        <TextView
+            android:id="@+id/vol_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Volume 2" />
+
+        <TextView
+            android:id="@+id/vol_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Volume 3" />
+
+        <TextView
+            android:id="@+id/vol_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Volume 4" />
+
+        <TextView
+            android:id="@+id/vol_4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
