@@ -6,7 +6,9 @@ var r = new Rune({
   debug: true
 });
 
+var my_group_under = r.group(0, 0);
 var my_group = r.group(0, 0);
+var my_groups = [my_group_under, my_group];
 // var noise = new Rune.Noise().noiseDetail(0.2); // https://github.com/runemadsen/rune.noise.js
 
 var people = [];
@@ -108,7 +110,7 @@ function Thing(location){
 
 function Person(location, stage){
   Thing.call(this, location)
-  this.stage = stage;
+  this.stage = stage[1];
   this.width = 50;
   this.height = 50;
   this.shape = new Rune.Ellipse(this.x, this.y,
@@ -167,7 +169,7 @@ function Person(location, stage){
       var dist = Math.sqrt((this.x - person.x)**2 + (this.y - person.y)**2);
       var stroke_color = Rune.map(dist, 0, max_dist/3, 0, 255)
       var stroke_width = Rune.map(dist, 0, max_dist/2, 5, 0)
-      newLine.addTo(stage).stroke(stroke_color).strokeWidth(stroke_width);
+      newLine.addTo(stage[0]).stroke(stroke_color).strokeWidth(stroke_width);
       this.lines.push(newLine);
     }
 
@@ -227,20 +229,19 @@ function Beacon(location, stage){
       }
     }
   }
-
-  this.shape.fill(this.color).addTo(stage).stroke(false);
-  this.stage = stage;
+  this.stage = stage[1];
+  this.shape.fill(this.color).addTo(stage[1]).stroke(false);
   return this;
 }
 
 for (let beaconOptions of initialBeacons) {
-  newBeacon = new Beacon(beaconOptions, my_group);
+  newBeacon = new Beacon(beaconOptions, my_groups);
   beacons.push(newBeacon);
   console.log('created beacon', newBeacon.id, '@', newBeacon.x, newBeacon.y);
 }
 
 for (let location of sampleInput1.locations) {  // initial list of people
-  thisPerson = new Person(location, my_group)
+  thisPerson = new Person(location, my_groups)
   people.push(thisPerson);
   console.log('created person', thisPerson.id, '@', thisPerson.x, thisPerson.y);
 }
