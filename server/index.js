@@ -48,6 +48,7 @@ app.use('/static', express.static(path.join(__dirname, '/static')));
 // Start socket
 io.on('connection', function(socket){
   console.log("user connected");
+  socket.emit('soundLocations', soundLocations);
 
   socket.on('position', function (msg) {
     // Decodes the position, then calculates volumes from position
@@ -56,6 +57,7 @@ io.on('connection', function(socket){
 
     // Send the volumes
     socket.emit('volumes', JSON.stringify(volumes));
+    io.emit('vizPositions', position)
     console.log("sent volumes", volumes);
   });
 });
@@ -121,7 +123,7 @@ function decodePosition(jsonPosition) {
 
 
 function xyPosFromGPS(gpsCoord){
-  var position = {'x':0.33, 'y':0.33};
+  var position = {'x':0.33, 'y':0.33, 'id':gpsCoord.id};
 
   if(!isFinite(gpsCoord.lon) || !isFinite(gpsCoord.lat)){
     console.log("Incorrect gps coord", gpsCoord);
