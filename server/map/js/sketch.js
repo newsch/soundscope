@@ -253,10 +253,11 @@ function updateLocations(locations, testData=false) {
   }
 }
 
-var socket = io;
+var socket = io.connect();
+// socket.emit('connection', '');
+socket.emit('connection', '');
 socket.on('vizPositions', function(data) {
   console.log(data);
 });
-
 
 r.play()
