@@ -17,22 +17,27 @@ const io = require('socket.io')(http);
 
 
 // SETUP: Put Locations of Sounds HERE:
-var soundLocations = [
+var soundLocations = {'soundLocations': [
   {"x":  0, "y":  0},
   {"x": 500, "y": 500},
-  {"x": 100, "y": 100}
-];
+  {"x": 100, "y": 100},
+  {"x": -100, "y": 556}
+]};
 
 var areaSize = {"x": 1000, "y": 1000};
 
-var gpsSettings = { 'origin': {'lat':  42.29319, 'lon': -71.26438},
-                    'lat_max': 42.29372,
-                    'lon_max': -71.26356};
+var gpsSettings = { 'origin': {'lon':  -71.264367, 'lat': 42.293178},
+                    'lon_max': -71.263536,
+                    'lat_max': 42.293801};
 
 
 // Serve index.html on load
-app.get('/', function(req, res){
+app.get('/debug', function(req, res){
   res.sendFile(__dirname + '/index.html');
+});
+
+app.get('/', function(req, res){
+  res.sendFile(__dirname + 'map.html');
 });
 
 // Serve all files from static
@@ -43,7 +48,7 @@ app.use('/static', express.static(path.join(__dirname, '/static')));
 io.on('connection', function(socket){
   console.log("user connected");
 
-  socket.on('position', function(msg){
+  socket.on('position', function (msg) {
     // Decodes the position, then calculates volumes from position
     position = decodePosition(msg);
     volumes = calcVolumes(position);
@@ -55,16 +60,20 @@ io.on('connection', function(socket){
 });
 
 
+
+
 // Functions
+
+
 
 function calcVolumes(position) {
   var soundVolumes = {'volumes':[]};
 
   // Iterates through soundLocations and set a volume for each
-  for(var i=0; i<soundLocations.length; i++){
+  for(var i=0; i<soundLocations.soundLocations.length; i++){
     // console.log("Sound", i);
     // console.log(lengthFromPoints(position, soundLocations[i]));
-    distance = lengthFromPoints(position, soundLocations[i]);
+    distance = lengthFromPoints(position, soundLocations.soundLocations[i]);
     volume = volumeFromDist(distance);
     i_str = i.toString();
 
@@ -129,3 +138,5 @@ function xyPosFromGPS(gpsCoord){
 
   return position;
 }
+
+console.log("started server on port 8080");
