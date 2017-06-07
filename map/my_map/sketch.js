@@ -128,7 +128,7 @@ function Person(location, stage){
     var rgb = []
     for (var i = 0; i < dist.length; i++) {
       max_dist = Math.sqrt(r.width**2 + r.height**2);
-      console.log(dist[i][0])
+      // console.log(dist[i][0])
       rgb.push(Rune.map(dist[i][1], max_dist, 0, 0, 255));
     }
     var new_color = new Rune.Color(rgb[0], rgb[1], rgb[2])
@@ -200,12 +200,14 @@ function Beacon(location, stage){
   return this;
 }
 
+/** Initialize beacons from sample array */
 for (let beaconOptions of initialBeacons) {
   newBeacon = new Beacon(beaconOptions, my_group);
   beacons.push(newBeacon);
   console.log('created beacon', newBeacon.id, '@', newBeacon.x, newBeacon.y);
 }
 
+/** Initialize people from sample array */
 for (let location of sampleInput1.locations) {  // initial list of people
   thisPerson = new Person(location, my_group)
   people.push(thisPerson);
@@ -234,7 +236,12 @@ r.on('update', function() {
   }
 });
 
-function updateLocations(locations) {
+/**
+ * Compare received data with current list of people and update/create
+ * new ones
+ * TODO: create new people if IDs aren't found in people array
+ */
+function updateLocations(locations, testData=false) {
   for (let location of locations) {
     foundPerson = people.find(function(person) {return person.id == location.id});
     if (foundPerson !== undefined) {
@@ -245,5 +252,11 @@ function updateLocations(locations) {
     }
   }
 }
+
+var socket = io;
+socket.on('vizPositions', function(data) {
+  console.log(data);
+});
+
 
 r.play()
