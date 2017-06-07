@@ -19,9 +19,9 @@ const io = require('socket.io')(http);
 // SETUP: Put Locations of Sounds HERE:
 var soundLocations = {'soundLocations': [
   {"x":  0, "y":  0, "radius": 100},
-  {"x": 500, "y": 500, "radius": 100},
+  {"x": 500, "y": 500, "radius": 700},
   {"x": 100, "y": 100, "radius": 100},
-  {"x": 500, "y": -106, "radius": 100}
+  {"x": 600, "y": 200, "radius": 300}
 ]};
 
 var areaSize = {"x": 1000, "y": 1000};
