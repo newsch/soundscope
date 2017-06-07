@@ -1,3 +1,5 @@
+var id = "dev" + (new Date()).getTime();
+
 function setVolume(vol){
     // var bingSound = document.getElementById('bing');
     // console.log('set bingSound.volume to ', vol);
@@ -31,7 +33,7 @@ function sendPosition(){
   var xPos = document.getElementById('xPosSlide').value;
   var yPos = document.getElementById('yPosSlide').value;
 
-  var position = {"lat": Number(xPos), "lon": Number(yPos)};
+  var position = {"lat": Number(xPos), "lon": Number(yPos), 'id':id};
 
   jsonLocation = JSON.stringify(position);
   socket.emit('position', jsonLocation);
