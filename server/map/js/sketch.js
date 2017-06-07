@@ -236,19 +236,36 @@ r.on('update', function() {
   }
 });
 
+function mapIncomingDataToCanvas(incomingLocation) {
+  var newX = Rune.map(incomingLocation.x, 0, 1000, 0, r.width);
+  var newY = Rune.map(incomingLocation.y, 0, 1000, 0, r.width);
+  return {'x': newX, 'y': newY}
+}
+
 /**
  * Compare received data with current list of people and update/create
  * new ones
  * TODO: create new people if IDs aren't found in people array
  */
 function updateLocations(locations, testData=false) {
+  console.log(locations);
   for (let location of locations) {
     foundPerson = people.find(function(person) {return person.id == location.id});
     if (foundPerson !== undefined) {
-      foundPerson.moveTo(location.x, location.y);
+      newLocation = {'x': location.x, 'y': location.y};
+      if (!testData) {
+        newLocation = mapIncomingDataToCanvas(newLocation);
+      }
+      foundPerson.moveTo(newLocation.x, newLocation.y);
       console.log('moved person', foundPerson.id, 'to', location.x, location.y);
-    } else {
+    } else {  // create new person
       console.log('No matching person found for id', location.id);
+      newLocation = mapIncomingDataToCanvas(location);
+      console.log(location);
+      newLocation.id = location.id;
+      thisPerson = new Person(newLocation, my_group)
+      people.push(thisPerson);
+      console.log('created person', thisPerson.id, '@', thisPerson.x, thisPerson.y);
     }
   }
 }
@@ -256,8 +273,6 @@ function updateLocations(locations, testData=false) {
 var socket = io.connect();
 // socket.emit('connection', '');
 socket.emit('connection', '');
-socket.on('vizPositions', function(data) {
-  console.log(data);
-});
+socket.on('vizPositions', updateLocations);
 
 r.play()
