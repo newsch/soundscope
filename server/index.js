@@ -25,6 +25,9 @@ var soundLocations = [
 
 var areaSize = {"x": 1000, "y": 1000};
 
+var gpsSettings = { 'origin': {'lat':  42.29319, 'lon': -71.26438},
+                    'lat_max': 42.29372,
+                    'lon_max': -71.26356};
 
 
 // Serve index.html on load
@@ -91,13 +94,45 @@ function volumeFromDist(dist) {
 
 
 function decodePosition(jsonPosition) {
-  try{ position = JSON.parse(jsonPosition); }
-  catch(err) { console.log("could not decode", jsonPosition); }
+  try{ gpsCoord = JSON.parse(jsonPosition); }
+  catch(err) { console.log("could not decode ", jsonPosition); }
 
-  position.x = Number(position.x);
-  position.y = Number(position.y);
+  console.log('gpsCoord', gpsCoord);
 
-  console.log("position:", position);
+  position = xyPosFromGPS(gpsCoord);
+
+  console.log("position", position);
+
+  return position;
+
+  // try{ position = JSON.parse(jsonPosition); }
+  // catch(err) { console.log("could not decode", jsonPosition); }
+  //
+  // position.x = Number(position.x);
+  // position.y = Number(position.y);
+  //
+  // console.log("position:", position);
+  //
+  // return position;
+}
+
+
+function xyPosFromGPS(gpsCoord){
+  var position = {'x':0.33, 'y':0.33};
+
+  if(!isFinite(gpsCoord.lon) || !isFinite(gpsCoord.lat)){
+    console.log("Incorrect gps coord", gpsCoord);
+    return NaN;
+  }
+
+  // console.log(gpsCoord.lon, gpsSettings.origin.lon);
+  console.log("gpsCoord", Number(gpsCoord.lon) - gpsSettings.origin.lon);
+  console.log("gpsMax", (gpsSettings.lon_max - gpsSettings.origin.lon));
+
+  position.y = areaSize.y * ((Number(gpsCoord.lon) - gpsSettings.origin.lon) / (gpsSettings.lon_max - gpsSettings.origin.lon));
+  position.x = areaSize.x * ((Number(gpsCoord.lat) - gpsSettings.origin.lat) / (gpsSettings.lat_max - gpsSettings.origin.lat));
+
+  console.log(position);
 
   return position;
 }
