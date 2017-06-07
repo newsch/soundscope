@@ -156,15 +156,24 @@ function Person(location, stage){
   }
 
   this.draw_lines_to_people = function(ppl_array){
-    // var distances = this.get_dist_to_things(ppl_array);
     if (this.lines != []) {  // delete lines
+      console.log(this.lines)
       for (line of this.lines) line.removeParent();
     }
     this.lines = [];
     for (person of ppl_array) {
       newLine = new Rune.Line(this.x, this.y, person.x, person.y)
-      newLine.addTo(this.stage);
+      var max_dist = Math.sqrt(r.width**2 + r.height**2);
+      var dist = Math.sqrt((this.x - person.x)**2 + (this.y - person.y)**2);
+      var stroke_color = Rune.map(dist, 0, max_dist/3, 0, 255)
+      var stroke_width = Rune.map(dist, 0, max_dist/2, 5, 0)
+      newLine.addTo(stage).stroke(stroke_color).strokeWidth(stroke_width);
       this.lines.push(newLine);
+    }
+
+    // remove duplicate lines, this is not the most efficeint wawy to do this...
+    for (var i = this.lines.length-1; i > this.lines.length/2; i--){
+      this.lines[i].removeParent();
     }
   }
   return this;
@@ -192,9 +201,13 @@ function Beacon(location, stage){
     this.x + 50, this.y - 50,
   );
   }
+
   this.circs = []
+  max_dist = Math.sqrt(r.width**2 + r.height**2);
+  this.range = max_dist * 0.5;
+
   this.draw_pulse = function(){
-    if(r.frameCount % 30 == 0){
+    if(r.frameCount % 40 == 0){
       var h = this.color.hsv().h;
       var s = this.color.hsv().s;
       var l = this.color.hsv().l;
@@ -206,14 +219,15 @@ function Beacon(location, stage){
     for (var i = 0; i < this.circs.length; i++) {
       this.circs[i].radius(0.5, true)
     }
-    max_dist = Math.sqrt(r.width**2 + r.height**2);
+
     for (var i = this.circs.length-1; i >= 0; i--){
-      if(this.circs[i].state.radius > max_dist * 0.6){
+      if(this.circs[i].state.radius > this.range){
         this.circs[i].removeParent();
         this.circs.splice(i, 1);
       }
     }
   }
+
   this.shape.fill(this.color).addTo(stage).stroke(false);
   this.stage = stage;
   return this;
@@ -233,11 +247,12 @@ for (let location of sampleInput1.locations) {  // initial list of people
 
 r.on('update', function() {
   var boundary = 40;
-  var maxStep = 20;
+  var maxStep = 10;
   for (beacon of beacons){
     beacon.draw_pulse();
   }
   for (person of people) {  // move people randomly
+
     var xLower = -maxStep, xUpper = maxStep;
     var yLower = -maxStep, yUpper = maxStep;
     if (person.x <= boundary) {
