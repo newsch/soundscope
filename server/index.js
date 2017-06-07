@@ -18,10 +18,10 @@ const io = require('socket.io')(http);
 
 // SETUP: Put Locations of Sounds HERE:
 var soundLocations = {'soundLocations': [
-  {"x":  0, "y":  0},
-  {"x": 500, "y": 500},
-  {"x": 100, "y": 100},
-  {"x": -100, "y": 556}
+  {"x":  0, "y":  0, "radius": 100},
+  {"x": 500, "y": 500, "radius": 100},
+  {"x": 100, "y": 100, "radius": 100},
+  {"x": 500, "y": -106, "radius": 100}
 ]};
 
 var areaSize = {"x": 1000, "y": 1000};
@@ -75,7 +75,7 @@ function calcVolumes(position) {
     // console.log("Sound", i);
     // console.log(lengthFromPoints(position, soundLocations[i]));
     distance = lengthFromPoints(position, soundLocations.soundLocations[i]);
-    volume = volumeFromDist(distance);
+    volume = volumeFromDist(distance, soundLocations.soundLocations[i].radius);
     i_str = i.toString();
 
     console.log("Sound", i, "vol", volume, "dist", distance);
@@ -97,8 +97,8 @@ function lengthFromPoints(p1, p2){
 }
 
 
-function volumeFromDist(dist) {
-  var vol = 1 - (dist/100);
+function volumeFromDist(dist, radius) {
+  var vol = 1 - (dist/radius);
 
   if(vol > 1){ return 1; }
   if(vol < 0){ return 0; }
