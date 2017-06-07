@@ -18,10 +18,14 @@ const io = require('socket.io')(http);
 
 // SETUP: Put Locations of Sounds HERE:
 var soundLocations = {'soundLocations': [
-  {"x":  0, "y":  0, "radius": 100},
-  {"x": 500, "y": 500, "radius": 700},
+  {"x":  0, "y":  0, "radius": 400},
+  {"x": 500, "y": 500, "radius": 300},
   {"x": 100, "y": 100, "radius": 100},
-  {"x": 600, "y": 200, "radius": 300}
+  {"x": 600, "y": 200, "radius": 300},
+  {"x": 500, "y": 800, "radius": 200},
+  {"x": 999, "y": 999, "radius": 100},
+  {"x": 300, "y": 600, "radius": 200},
+  {"x": 400, "y": 400, "radius": 150}
 ]};
 
 var areaSize = {"x": 1000, "y": 1000};
@@ -43,7 +47,7 @@ app.get('/debug', function(req, res){
 
 // Serve all files from static
 app.use('/static', express.static(path.join(__dirname, '/static')));
-app.use('/map', express.static(path.join(__dirname, '/map')))
+app.use('/map', express.static(path.join(__dirname, '/map')));
 
 // Start socket
 io.on('connection', function(socket){
@@ -57,7 +61,7 @@ io.on('connection', function(socket){
 
     // Send the volumes
     socket.emit('volumes', JSON.stringify(volumes));
-    io.emit('vizPositions', [position])
+    io.emit('vizPositions', [position]);
     console.log("sent volumes", volumes);
   });
 });
