@@ -31,7 +31,7 @@ function sendPosition(){
   var xPos = document.getElementById('xPosSlide').value;
   var yPos = document.getElementById('yPosSlide').value;
 
-  var position = {"x": Number(xPos), "y": Number(yPos)};
+  var position = {"lat": Number(xPos), "lon": Number(yPos)};
 
   jsonLocation = JSON.stringify(position);
   socket.emit('position', jsonLocation);
