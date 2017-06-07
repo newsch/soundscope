@@ -31,14 +31,15 @@ var gpsSettings = { 'origin': {'lon':  -71.264367, 'lat': 42.293178},
                     'lat_max': 42.293801};
 
 
-// Serve index.html on load
+// Serve map.html on root
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/map.html');
+});
+
 app.get('/debug', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
-app.get('/', function(req, res){
-  res.sendFile(__dirname + 'map.html');
-});
 
 // Serve all files from static
 app.use('/static', express.static(path.join(__dirname, '/static')));
