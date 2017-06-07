@@ -57,7 +57,7 @@ io.on('connection', function(socket){
 
     // Send the volumes
     socket.emit('volumes', JSON.stringify(volumes));
-    io.emit('vizPositions', position)
+    io.emit('vizPositions', [position])
     console.log("sent volumes", volumes);
   });
 });
