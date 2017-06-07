@@ -19,8 +19,8 @@ const io = require('socket.io')(http);
 // SETUP: Put Locations of Sounds HERE:
 var soundLocations = [
   {"x":  0, "y":  0},
-  {"x": 50, "y": 50},
-  {"x": 25, "y": 10}
+  {"x": 500, "y": 500},
+  {"x": 100, "y": 100}
 ];
 
 var areaSize = {"x": 1000, "y": 1000};
@@ -42,11 +42,11 @@ app.use('/static', express.static(path.join(__dirname, '/static')));
 // Start socket
 io.on('connection', function(socket){
   console.log("user connected");
+
   socket.on('position', function(msg){
     // Decodes the position, then calculates volumes from position
     position = decodePosition(msg);
     volumes = calcVolumes(position);
-
 
     // Send the volumes
     socket.emit('volumes', JSON.stringify(volumes));
@@ -62,13 +62,13 @@ function calcVolumes(position) {
 
   // Iterates through soundLocations and set a volume for each
   for(var i=0; i<soundLocations.length; i++){
-    console.log("Sound", i);
+    // console.log("Sound", i);
     // console.log(lengthFromPoints(position, soundLocations[i]));
     distance = lengthFromPoints(position, soundLocations[i]);
     volume = volumeFromDist(distance);
     i_str = i.toString();
 
-    console.log(volume, distance);
+    console.log("Sound", i, "vol", volume, "dist", distance);
     soundVolumes.volumes.push({'vol': volume});
   }
 
@@ -88,8 +88,11 @@ function lengthFromPoints(p1, p2){
 
 
 function volumeFromDist(dist) {
-  // Needs to be set correctly
-  return Math.max(1 - (dist/100), 0);
+  var vol = 1 - (dist/100);
+
+  if(vol > 1){ return 1; }
+  if(vol < 0){ return 0; }
+  return vol;
 }
 
 
@@ -97,23 +100,13 @@ function decodePosition(jsonPosition) {
   try{ gpsCoord = JSON.parse(jsonPosition); }
   catch(err) { console.log("could not decode ", jsonPosition); }
 
-  console.log('gpsCoord', gpsCoord);
+  // console.log('gpsCoord', gpsCoord);
 
   position = xyPosFromGPS(gpsCoord);
 
-  console.log("position", position);
+  console.log('gpsCoord', gpsCoord, "position", position);
 
   return position;
-
-  // try{ position = JSON.parse(jsonPosition); }
-  // catch(err) { console.log("could not decode", jsonPosition); }
-  //
-  // position.x = Number(position.x);
-  // position.y = Number(position.y);
-  //
-  // console.log("position:", position);
-  //
-  // return position;
 }
 
 
@@ -126,8 +119,8 @@ function xyPosFromGPS(gpsCoord){
   }
 
   // console.log(gpsCoord.lon, gpsSettings.origin.lon);
-  console.log("gpsCoord", Number(gpsCoord.lon) - gpsSettings.origin.lon);
-  console.log("gpsMax", (gpsSettings.lon_max - gpsSettings.origin.lon));
+  // console.log("gpsCoord", Number(gpsCoord.lon) - gpsSettings.origin.lon);
+  // console.log("gpsMax", (gpsSettings.lon_max - gpsSettings.origin.lon));
 
   position.y = areaSize.y * ((Number(gpsCoord.lon) - gpsSettings.origin.lon) / (gpsSettings.lon_max - gpsSettings.origin.lon));
   position.x = areaSize.x * ((Number(gpsCoord.lat) - gpsSettings.origin.lat) / (gpsSettings.lat_max - gpsSettings.origin.lat));
