@@ -209,14 +209,17 @@ function Beacon(location, stage){
   this.range = max_dist * 0.5;
 
   this.draw_pulse = function(){
+    var h = this.color.hsv().h;
+    var s = this.color.hsv().s;
+    var l = this.color.hsv().l;
     if(r.frameCount % 40 == 0){
-      var h = this.color.hsv().h;
-      var s = this.color.hsv().s;
-      var l = this.color.hsv().l;
       var circ = r.circle(this.x, this.y, 1)
         .stroke(false)
         .fill("hsv", h, Rune.random(50, 100), Rune.random(70,90), 0.03)
       this.circs.push(circ)
+    }
+    if(r.frameCount % 5 == 0){
+      this.shape.fill("hsv", h, Rune.random(50, 100), Rune.random(70,90));
     }
     for (var i = 0; i < this.circs.length; i++) {
       this.circs[i].radius(0.5, true)
@@ -228,6 +231,7 @@ function Beacon(location, stage){
         this.circs.splice(i, 1);
       }
     }
+    this.update_color = function(){}
   }
   this.stage = stage[1];
   this.shape.fill(this.color).addTo(stage[1]).stroke(false);
