@@ -218,6 +218,7 @@ function Beacon(location, stage){
         .fill("hsv", h, Rune.random(50, 100), Rune.random(70,90), 0.03)
       this.circs.push(circ)
     }
+    // blinks every five frame
     if(r.frameCount % 5 == 0){
       this.shape.fill("hsv", h, Rune.random(50, 100), Rune.random(70,90));
     }
@@ -231,7 +232,6 @@ function Beacon(location, stage){
         this.circs.splice(i, 1);
       }
     }
-    this.update_color = function(){}
   }
   this.stage = stage[1];
   this.shape.fill(this.color).addTo(stage[1]).stroke(false);
