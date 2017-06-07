@@ -33,7 +33,7 @@ var gpsSettings = { 'origin': {'lon':  -71.264367, 'lat': 42.293178},
 
 // Serve map.html on root
 app.get('/', function(req, res){
-  res.sendFile(__dirname + '/map.html');
+  res.sendFile(__dirname + '/map/index.html');
 });
 
 app.get('/debug', function(req, res){
@@ -43,7 +43,7 @@ app.get('/debug', function(req, res){
 
 // Serve all files from static
 app.use('/static', express.static(path.join(__dirname, '/static')));
-
+app.use('/map', express.static(path.join(__dirname, '/map')))
 
 // Start socket
 io.on('connection', function(socket){
@@ -57,7 +57,7 @@ io.on('connection', function(socket){
 
     // Send the volumes
     socket.emit('volumes', JSON.stringify(volumes));
-    io.emit('vizPositions', position)
+    io.emit('vizPositions', [position])
     console.log("sent volumes", volumes);
   });
 });
