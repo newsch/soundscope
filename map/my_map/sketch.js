@@ -129,9 +129,9 @@ function Person(location, stage){
     for (var i = 0; i < dist.length; i++) {
       max_dist = Math.sqrt(r.width**2 + r.height**2);
       console.log(dist[i][0])
-      rgb.push(Rune.map(dist[i][1], max_dist, 0, 255, 60));
+      rgb.push(Rune.map(dist[i][1], max_dist, 0, 0, 255));
     }
-    var new_color = new Rune.Color(rgb[2], rgb[0], rgb[1])
+    var new_color = new Rune.Color(rgb[0], rgb[1], rgb[2])
     this.color = new_color;
     this.shape.fill(new_color);
   }
