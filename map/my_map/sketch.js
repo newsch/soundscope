@@ -130,7 +130,7 @@ function Person(location, stage){
     }
     var new_color = new Rune.Color(rgb[0], rgb[1], rgb[2], 1)
     this.color = new_color;
-    this.shape.fill(new_color);
+    this.shape.fill(this.color);
   }
   this.update_size = function(width, height){
     this.width = width;
@@ -199,15 +199,16 @@ function Beacon(location, stage){
       var s = this.color.hsv().s;
       var l = this.color.hsv().l;
       var circ = r.circle(this.x, this.y, 1)
-        .stroke(false).fill("hsv", h, Rune.random(50, 100), Rune.random(80,100), 0.05)
+        .stroke(false)
+        .fill("hsv", h, Rune.random(50, 100), Rune.random(70,90), 0.03)
       this.circs.push(circ)
     }
     for (var i = 0; i < this.circs.length; i++) {
       this.circs[i].radius(0.5, true)
     }
     max_dist = Math.sqrt(r.width**2 + r.height**2);
-    for (var i = this.circs.length -1; i>=0;i--){
-      if(this.circs[i].state.radius > max_dist/1.5){
+    for (var i = this.circs.length-1; i >= 0; i--){
+      if(this.circs[i].state.radius > max_dist * 0.6){
         this.circs[i].removeParent();
         this.circs.splice(i, 1);
       }
@@ -233,6 +234,9 @@ for (let location of sampleInput1.locations) {  // initial list of people
 r.on('update', function() {
   var boundary = 40;
   var maxStep = 20;
+  for (beacon of beacons){
+    beacon.draw_pulse();
+  }
   for (person of people) {  // move people randomly
     var xLower = -maxStep, xUpper = maxStep;
     var yLower = -maxStep, yUpper = maxStep;
@@ -250,9 +254,7 @@ r.on('update', function() {
     person.update_my_color(beacons);
     person.draw_lines_to_people(people);
   }
-  for (beacon of beacons){
-    beacon.draw_pulse();
-  }
+
 });
 
 function updateLocations(locations) {
