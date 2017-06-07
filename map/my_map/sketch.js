@@ -113,7 +113,7 @@ function Person(location, stage){
   this.height = 50;
   this.shape = new Rune.Ellipse(this.x, this.y,
     this.width, this.height)
-    .fill(this.color).addTo(this.stage);
+    .fill(this.color).stroke(false).addTo(this.stage);
   this.lines = [];
 
   this.move = function(dx, dy){
@@ -122,16 +122,13 @@ function Person(location, stage){
     this.shape.move(dx, dy, true)
   }
   this.update_my_color = function(beacons){
-    //console.log(beacons)
     var dist = this.get_dist_to_things(beacons);
-    //console.log(dist)
     var rgb = []
     for (var i = 0; i < dist.length; i++) {
       max_dist = Math.sqrt(r.width**2 + r.height**2);
-      console.log(dist[i][0])
       rgb.push(Rune.map(dist[i][1], max_dist, 0, 0, 255));
     }
-    var new_color = new Rune.Color(rgb[0], rgb[1], rgb[2])
+    var new_color = new Rune.Color(rgb[0], rgb[1], rgb[2], 1)
     this.color = new_color;
     this.shape.fill(new_color);
   }
@@ -195,7 +192,28 @@ function Beacon(location, stage){
     this.x + 50, this.y - 50,
   );
   }
-  this.shape.fill(this.color).addTo(stage);
+  this.circs = []
+  this.draw_pulse = function(){
+    if(r.frameCount % 30 == 0){
+      var h = this.color.hsv().h;
+      var s = this.color.hsv().s;
+      var l = this.color.hsv().l;
+      var circ = r.circle(this.x, this.y, 1)
+        .stroke(false).fill("hsv", h, Rune.random(50, 100), Rune.random(80,100), 0.05)
+      this.circs.push(circ)
+    }
+    for (var i = 0; i < this.circs.length; i++) {
+      this.circs[i].radius(0.5, true)
+    }
+    max_dist = Math.sqrt(r.width**2 + r.height**2);
+    for (var i = this.circs.length -1; i>=0;i--){
+      if(this.circs[i].state.radius > max_dist/1.5){
+        this.circs[i].removeParent();
+        this.circs.splice(i, 1);
+      }
+    }
+  }
+  this.shape.fill(this.color).addTo(stage).stroke(false);
   this.stage = stage;
   return this;
 }
@@ -231,6 +249,9 @@ r.on('update', function() {
     person.move(Rune.random(xLower, xUpper), Rune.random(yLower, yUpper))
     person.update_my_color(beacons);
     person.draw_lines_to_people(people);
+  }
+  for (beacon of beacons){
+    beacon.draw_pulse();
   }
 });
 
