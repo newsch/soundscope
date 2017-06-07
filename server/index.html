@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <script src='/static/js/socket.io.js' charset="UTF-8"></script>
+    <script src='/static/js/soundscapewebappclient.js' charset="UTF-8"></script>
+    <style> body {padding: 0; margin: 0;} </style>
+  </head>
+
+
+  <body>
+    Hi, this is the temp web page.
+    <br>
+    <br>
+
+    <button onclick="playBing()">Play</button>
+    <button onclick="toggleLoop()">toggleLoop</button>
+
+    <br>
+    x:
+    <input id='xPosSlide'type="range" min='0' max='100' defaultValue='50'>
+    y:
+    <input id='yPosSlide'type="range" min='0' max='100' defaultValue='50'>
+    <br>
+    <br>
+
+    <audio controls id="bing">
+      <source src="/static/assets/bing.ogg" type="audio/ogg">
+      </audio>
+    </body>
+  </html>
