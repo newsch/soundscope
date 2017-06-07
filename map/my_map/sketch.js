@@ -213,8 +213,22 @@ for (let location of sampleInput1.locations) {  // initial list of people
 }
 
 r.on('update', function() {
+  var boundary = 40;
+  var maxStep = 20;
   for (person of people) {  // move people randomly
-    person.move(Rune.random(-20,20), Rune.random(-20,20))
+    var xLower = -maxStep, xUpper = maxStep;
+    var yLower = -maxStep, yUpper = maxStep;
+    if (person.x <= boundary) {
+      xLower = 0;
+    } else if (person.x >= r.width - boundary) {
+      xUpper = 0;
+    };
+    if (person.y <= boundary) {
+      yLower = 0;
+    } else if (person.y >= r.height - boundary) {
+      yUpper = 0;
+    };
+    person.move(Rune.random(xLower, xUpper), Rune.random(yLower, yUpper))
     person.update_my_color(beacons);
     person.draw_lines_to_people(people);
   }
