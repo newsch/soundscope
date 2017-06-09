@@ -246,12 +246,12 @@ for (let beaconOptions of initialBeacons) {
   console.log('created beacon', newBeacon.id, '@', newBeacon.x, newBeacon.y);
 }
 
-/** Initialize people from sample array */
-for (let location of sampleInput1.locations) {  // initial list of people
-  thisPerson = new Person(location, my_groups)
-  people.push(thisPerson);
-  console.log('created person', thisPerson.id, '@', thisPerson.x, thisPerson.y);
-}
+// /** Initialize people from sample array */
+// for (let location of sampleInput1.locations) {  // initial list of people
+//   thisPerson = new Person(location, my_groups)
+//   people.push(thisPerson);
+//   console.log('created person', thisPerson.id, '@', thisPerson.x, thisPerson.y);
+// }
 
 r.on('update', function() {
   var boundary = 40;

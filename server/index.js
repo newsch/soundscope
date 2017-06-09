@@ -35,8 +35,11 @@ var gpsSettings = { 'origin': {'lon':  -71.264367, 'lat': 42.293178},
                     'lat_max': 42.293801};
 
 
-// Serve map.html on root
-app.get('/', function(req, res){
+app.get('/', function (req, res) {
+  res.sendFile(__dirname + '/webapp/client.html');
+});
+
+app.get('/map', function(req, res){
   res.sendFile(__dirname + '/map/index.html');
 });
 
@@ -46,7 +49,7 @@ app.get('/debug', function(req, res){
 
 
 // Serve all files from static
-app.use('/static', express.static(path.join(__dirname, '/static')));
+app.use('/webapp', express.static(path.join(__dirname, '/webapp')));
 app.use('/map', express.static(path.join(__dirname, '/map')));
 
 // Start socket

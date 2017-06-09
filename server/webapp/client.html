@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <script src='webapp/static/js/socket.io.js' charset="UTF-8"></script>
+    <script src='webapp/static/js/soundscapewebappclient.js' charset="UTF-8"></script>
+    <style> body {padding: 0; margin: 0;} </style>
+  </head>
+
+
+  <body>
+    Hi, this is the temp webapp.
+    <br>
+    <br>
+
+    <button onclick="playBing()">Play</button>
+    <button onclick="toggleLoop()">toggleLoop</button>
+
+    <br>
+    lat:
+    <input id='latPosSlide'type="range" min='-100' max='1100' defaultValue='500'>
+    lon:
+    <input id='lonPosSlide'type="range" min='-100' max='1100' defaultValue='500'>
+    <br>
+    <br>
+
+    <audio controls id="bing">
+      <source src="/static/assets/birds.ogg" type="audio/ogg">
+      </audio>
+    </body>
+  </html>
