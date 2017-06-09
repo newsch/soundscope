@@ -1,3 +1,5 @@
+NUM_SOUNDS = 3
+
 var id = "dev" + (new Date()).getTime();
 
 
@@ -56,11 +58,31 @@ function sendPosition(){
   // console.log('sent position', position.x, position.y);
 }
 
+function populateSounds() {
+  var soundsList = document.getElementById("sounds-list");
+  console.log(soundsList);
+
+  var i = 0;
+  for(i=0; i<NUM_SOUNDS; i++){
+    var li = document.createElement("li");
+    var audio = document.createElement("audio");
+    audio.src = "/webapp/static/assets/" + i + ".ogg";
+    // audio.type = "audio/ogg";
+
+    li.appendChild(audio);
+    soundsList.appendChild(li);
+  }
+}
+
 
 var socket = io();
 socket.emit('connection', '');
-
 socket.on('volumes', setVolume);
 
-// sendPosition();
-setInterval(sendPosition, 1000);
+
+document.onload = function(){
+  // sendPosition();
+  populateSounds();
+};
+
+// setInterval(sendPosition, 1000);

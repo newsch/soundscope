@@ -31,25 +31,27 @@ var model = (function() {
   };
 })();
 
+function createTempFile(callback) {
+  var tmpFilename = "tmp.dat";
+  requestFileSystem(TEMPORARY, 20 * 1024 * 1024, function(filesystem) {
+    function create() {
+      filesystem.root.getFile(tmpFilename, {
+        create : true
+      }, function(zipFile) {
+        callback(zipFile);
+      });
+    }
 
+    filesystem.root.getFile(tmpFilename, null, function(entry) {
+      entry.remove(create, create);
+    }, create);
+  });
+
+  
 function populateAudio(file){
   var requestFileSystem = obj.webkitRequestFileSystem || obj.mozRequestFileSystem || obj.requestFileSystem;
 
-  function createTempFile(callback) {
-		var tmpFilename = "tmp.dat";
-		requestFileSystem(TEMPORARY, 20 * 1024 * 1024, function(filesystem) {
-			function create() {
-				filesystem.root.getFile(tmpFilename, {
-					create : true
-				}, function(zipFile) {
-					callback(zipFile);
-				});
-			}
 
-			filesystem.root.getFile(tmpFilename, null, function(entry) {
-				entry.remove(create, create);
-			}, create);
-		});
 	}
 
   var fileList = document.getElementById("file-list");
