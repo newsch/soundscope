@@ -24,18 +24,6 @@ function setVolume(vol){
     return 1;
 }
 
-function playBing(){
-  var bingSound = document.getElementById('bing');
-  console.log("playing bingSound");
-  bingSound.play();
-}
-
-function toggleLoop(){
-  var bingSound = document.getElementById('bing');
-  console.log('toggling bingSound loop to ', !bingSound.loop);
-  bingSound.loop = !bingSound.loop;
-}
-
 
 function sendPosition(){
   var gpsPos = {};
@@ -60,13 +48,17 @@ function sendPosition(){
 
 function populateSounds() {
   var soundsList = document.getElementById("sounds-list");
-  console.log(soundsList);
+  // console.log(soundsList);
 
   var i = 0;
-  for(i=0; i<NUM_SOUNDS; i++){
+  for(i=0; i < NUM_SOUNDS + 1; i++){
     var li = document.createElement("li");
     var audio = document.createElement("audio");
     audio.src = "/webapp/static/assets/" + i + ".ogg";
+    audio.autoplay = true;
+    audio.volume = 0;
+    audio.controls = true;
+    audio.loop = true;
     // audio.type = "audio/ogg";
 
     li.appendChild(audio);
@@ -80,7 +72,7 @@ socket.emit('connection', '');
 socket.on('volumes', setVolume);
 
 
-document.onload = function(){
+window.onload = function(){
   // sendPosition();
   populateSounds();
 };
