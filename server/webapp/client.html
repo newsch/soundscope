@@ -2,9 +2,11 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <script src='webapp/static/js/socket.io.js' charset="UTF-8"></script>
-    <script src='webapp/static/js/soundscapewebappclient.js' charset="UTF-8"></script>
-    <style> body {padding: 0; margin: 0;} </style>
+    <script src='webapp/static/js/socket.io.js' charset="UTF-8" type="text/javascript"></script>
+    <script src='webapp/static/js/zip.js' charset="UTF-8" type="text/javascript"></script>
+    <script src='webapp/static/js/downloadAudio.js' charset="UTF-8" type="text/javascript"></script>
+    <script src='webapp/static/js/soundscapewebappclient.js' charset="UTF-8" type="text/javascript"></script>
+    <style> body {padding: 10; margin: 10;} </style>
   </head>
 
 
@@ -17,15 +19,34 @@
     <button onclick="toggleLoop()">toggleLoop</button>
 
     <br>
-    lat:
-    <input id='latPosSlide'type="range" min='-100' max='1100' defaultValue='500'>
-    lon:
-    <input id='lonPosSlide'type="range" min='-100' max='1100' defaultValue='500'>
+
+    <table id='manualControls'>
+      <tr>
+        <th>
+          lat:
+        <input id='latPosSlide'type="range" min='-100' max='1100' defaultValue='500'>
+        </th>
+        <th><p id='latVal'> 0 </p></th>
+      </tr>
+      <tr>
+        <th>
+          lon:
+          <input id='lonPosSlide'type="range" min='-100' max='1100' defaultValue='500'>
+        </th>
+        <th><p id='lonVal'> 0 </p></th>
+      </tr>
+
     <br>
     <br>
 
-    <audio controls id="bing">
-      <source src="/static/assets/birds.ogg" type="audio/ogg">
-      </audio>
-    </body>
-  </html>
+    <!-- <ul id='soundsList' hidden="true"> -->
+    <ul id='soundsList'>
+      <li>
+        one list element
+        <!-- <audio>
+          <source src="webapp/static/assets/birds.ogg" type="audio/ogg">
+        </audio> -->
+      </li>
+    </ul>
+  </body>
+</html>

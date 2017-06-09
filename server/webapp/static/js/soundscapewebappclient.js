@@ -37,13 +37,19 @@ function toggleLoop(){
 
 function sendPosition(){
   var gpsPos = {};
-  var xPos = document.getElementById('xPosSlide').value;
-  var yPos = document.getElementById('yPosSlide').value;
+  var xyPos = {};
 
-  gpsPos.lat = (xPos/1000) * (gpsSettings.lat_max - gpsSettings.origin.lat) + gpsSettings.origin.lat;
-  gpsPos.lon = (yPos/1000) * (gpsSettings.lon_max - gpsSettings.origin.lon) + gpsSettings.origin.lon;
+  xyPos.lat = document.getElementById('latPosSlide').value;
+  xyPos.lon = document.getElementById('lonPosSlide').value;
+
+  gpsPos.lat = ((xyPos.lat/1000) * (gpsSettings.lat_max - gpsSettings.origin.lat) + gpsSettings.origin.lat).toFixed(9);
+  gpsPos.lon = ((xyPos.lon/1000) * (gpsSettings.lon_max - gpsSettings.origin.lon) + gpsSettings.origin.lon).toFixed(9);
+
+  document.getElementById('latVal').innerHTML = String(xyPos.lat + "\t" + gpsPos.lat);
+  document.getElementById('lonVal').innerHTML = String(xyPos.lon + "\t" + gpsPos.lon);
 
   var position = {"lat": Number(gpsPos.lat), "lon": Number(gpsPos.lon), 'id':id};
+
 
   jsonLocation = JSON.stringify(position);
   socket.emit('position', jsonLocation);
@@ -57,4 +63,4 @@ socket.emit('connection', '');
 socket.on('volumes', setVolume);
 
 // sendPosition();
-setInterval(sendPosition, 2000);
+setInterval(sendPosition, 1000);
