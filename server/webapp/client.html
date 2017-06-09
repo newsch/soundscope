@@ -14,13 +14,27 @@
     Hi, this is the temp webapp.
     <br>
     <br>
-
-    <button onclick="playBing()">Play</button>
-    <button onclick="toggleLoop()">toggleLoop</button>
-
     <br>
 
-    <table id='manualControls'>
+    <button onclick="playAllSounds()"> Start Sounds </button>
+
+    <table id='location_controls'>
+      <tr>
+        <th>
+          <button onclick="toggleGPS()">Toggle GPS</button>
+        </th>
+        <th>
+          <p id="using_gps">Using GPS: false</p>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <p> GPS coordinates:</p>
+        </th>
+        <th>
+          <p id='gps_coordinates'> 0 </p>
+        </th>
+      </tr>
       <tr>
         <th>
           lat:
@@ -35,6 +49,12 @@
         </th>
         <th><p id='lonVal'> 0 </p></th>
       </tr>
+      <tr>
+        <th>
+          <p id='num_volume_packets'>0</p>
+        </th>
+      </tr>
+    </table>
 
     <br>
     <br>
